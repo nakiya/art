@@ -1,0 +1,654 @@
+<title>Samanola Siripa Upscale</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,500..800&family=IBM+Plex+Mono:wght@400;500&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&display=swap">
+<style>
+/* Layout: one 720px reading column; figures (route cards, diagram, chart) widen to 1040px. A tape-label strip opens the page. */
+:root {
+  --bg: #f4f6f8;
+  --panel: #fbfcfd;
+  --ink: #121a22;
+  --ink-2: #47535f;
+  --ink-3: #5f6b78;
+  --line: #d6dde4;
+  --line-soft: #e6ebf0;
+  --accent: #1c5db5;
+  --accent-tint: #e3ecf8;
+  --bar: #2a78d6;
+  --bar-range: #9cc3ef;
+  --good: #0b7a2e;
+  --good-tint: #e2f3e7;
+  --warn: #9a5b00;
+  --warn-tint: #fdf1da;
+  --warn-line: #e0a320;
+  --code-bg: #eaeff4;
+  --font-display: "Archivo", "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
+  --font-body: "Source Sans 3", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0e1319; --panel: #151c24; --ink: #e8edf2; --ink-2: #b4bfca; --ink-3: #94a0ad;
+    --line: #2b3541; --line-soft: #212a34; --accent: #72adf2; --accent-tint: #1a2a3e;
+    --bar: #3987e5; --bar-range: #284f7f; --good: #5fd07e; --good-tint: #15301f;
+    --warn: #f0bb55; --warn-tint: #2c2312; --warn-line: #b98314; --code-bg: #1b232d;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0e1319; --panel: #151c24; --ink: #e8edf2; --ink-2: #b4bfca; --ink-3: #94a0ad;
+  --line: #2b3541; --line-soft: #212a34; --accent: #72adf2; --accent-tint: #1a2a3e;
+  --bar: #3987e5; --bar-range: #284f7f; --good: #5fd07e; --good-tint: #15301f;
+  --warn: #f0bb55; --warn-tint: #2c2312; --warn-line: #b98314; --code-bg: #1b232d;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: 17px; line-height: 1.6;
+  padding-inline: 20px; padding-block: 40px 72px;
+}
+.page { max-width: 1040px; margin: 0 auto; display: grid; gap: 64px; }
+.col { max-width: 720px; }
+section { display: grid; gap: 20px; min-width: 0; }
+
+h1, h2, h3 { font-family: var(--font-display); font-stretch: 85%; line-height: 1.12; text-wrap: balance; margin: 0; }
+h1 { font-size: clamp(2.1rem, 5.4vw, 3.4rem); font-weight: 760; letter-spacing: -0.01em; }
+h2 { font-size: 1.7rem; font-weight: 720; }
+h3 { font-size: 1.15rem; font-weight: 700; }
+p { margin: 0; }
+a { color: var(--accent); text-underline-offset: 2px; }
+a:focus-visible, button:focus-visible, input:focus-visible, [tabindex]:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 3px; }
+.eyebrow { font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-3); }
+.lede { font-size: 1.2rem; line-height: 1.55; color: var(--ink-2); max-width: 680px; }
+.muted { color: var(--ink-3); }
+.small { font-size: 0.92rem; }
+code, .mono { font-family: var(--font-mono); font-size: 0.86em; }
+:not(pre) > code { background: var(--code-bg); padding: 1px 5px; border-radius: 4px; }
+ul.plain { margin: 0; padding-left: 1.1em; display: grid; gap: 8px; }
+
+/* Header + tape label */
+header { display: grid; gap: 22px; }
+.tape { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border: 1.5px solid var(--ink); border-radius: 4px; background: var(--panel); }
+.tape > div { padding: 12px 14px; display: grid; gap: 4px; align-content: start; min-width: 0; }
+.tape > div + div { border-left: 1px solid var(--line); }
+.tape .k { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-3); }
+.tape .v { font-weight: 600; line-height: 1.35; }
+@media (max-width: 760px) {
+  .tape { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .tape > div:nth-child(3) { border-left: 0; }
+  .tape > div:nth-child(n+3) { border-top: 1px solid var(--line); }
+}
+@media (max-width: 420px) {
+  .tape { grid-template-columns: 1fr; }
+  .tape > div + div { border-left: 0; border-top: 1px solid var(--line); }
+}
+
+/* Route cards */
+.routes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+@media (max-width: 860px) { .routes { grid-template-columns: 1fr; } }
+.route { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 20px; display: grid; gap: 14px; align-content: start; min-width: 0; }
+.route.pick { border: 2px solid var(--good); padding: 19px; }
+.route-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; }
+.route .tag { font-family: var(--font-mono); font-size: 0.74rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-3); }
+.pill { display: inline-flex; align-items: center; gap: 6px; font-size: 0.8rem; font-weight: 700; padding: 2px 10px; border-radius: 999px; background: var(--good-tint); color: var(--good); }
+.price { font-family: var(--font-display); font-stretch: 85%; font-size: 2rem; font-weight: 760; line-height: 1; }
+.price small { font-family: var(--font-body); font-size: 0.9rem; font-weight: 400; color: var(--ink-3); }
+dl.facts { margin: 0; display: grid; gap: 10px; }
+dl.facts > div { display: grid; gap: 1px; }
+dl.facts dt { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--ink-3); }
+dl.facts dd { margin: 0; font-size: 0.97rem; line-height: 1.45; }
+
+/* Figures */
+figure { margin: 0; display: grid; gap: 10px; min-width: 0; }
+figcaption { font-size: 0.92rem; color: var(--ink-3); max-width: 720px; }
+.scroll-x { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.diagram { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 16px; }
+.diagram svg { display: block; width: 100%; height: auto; }
+.pipe svg { min-width: 760px; }
+.res-wrap { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 28px; align-items: start; }
+@media (max-width: 820px) { .res-wrap { grid-template-columns: 1fr; } }
+.svg-ink { fill: var(--ink); }
+.svg-ink2 { fill: var(--ink-2); }
+.svg-ink3 { fill: var(--ink-3); }
+
+/* Cost chart */
+.chart { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 20px; display: grid; gap: 18px; min-width: 0; }
+.control { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; }
+.control label { font-weight: 600; }
+.control input[type=range] { flex: 1 1 220px; max-width: 360px; accent-color: var(--accent); }
+.control output { font-family: var(--font-mono); font-variant-numeric: tabular-nums; font-weight: 500; min-width: 4.5ch; }
+.bars { display: grid; gap: 4px; position: relative; }
+.group-label { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-3); padding-top: 10px; }
+.group-label:first-child { padding-top: 0; }
+.bar-row { display: grid; grid-template-columns: minmax(0, 220px) minmax(0, 1fr); align-items: center; gap: 12px; min-height: 34px; border-radius: 4px; padding: 2px 4px; cursor: default; }
+.bar-row:hover, .bar-row:focus-visible { background: var(--accent-tint); }
+.bar-name { font-size: 0.95rem; line-height: 1.25; }
+.bar-name span { display: block; font-size: 0.8rem; color: var(--ink-3); }
+.track { position: relative; height: 22px; display: flex; align-items: center; gap: 8px; }
+.fill { height: 18px; background: var(--bar); border-radius: 0 4px 4px 0; flex: none; }
+.fill.range { background: linear-gradient(90deg, var(--bar) 0 var(--lo, 50%), var(--bar-range) var(--lo, 50%) 100%); }
+.dot { width: 10px; height: 10px; border-radius: 50%; background: var(--bar); box-shadow: 0 0 0 2px var(--panel); flex: none; }
+.val { font-family: var(--font-mono); font-size: 0.85rem; font-variant-numeric: tabular-nums; color: var(--ink); white-space: nowrap; }
+.axis { display: grid; grid-template-columns: minmax(0, 220px) minmax(0, 1fr); gap: 12px; padding: 0 4px; }
+.ticks { position: relative; height: 18px; border-top: 1px solid var(--line); }
+.ticks span { position: absolute; top: 2px; transform: translateX(-50%); font-family: var(--font-mono); font-size: 0.74rem; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+.ticks span:first-child { transform: none; }
+.grid-lines { position: absolute; inset: 0; pointer-events: none; }
+.tip { position: absolute; z-index: 5; max-width: 280px; background: var(--ink); color: var(--bg); font-size: 0.86rem; line-height: 1.4; padding: 8px 10px; border-radius: 6px; pointer-events: none; }
+@media (max-width: 560px) {
+  .bar-row, .axis { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+  .axis > div:first-child { display: none; }
+}
+
+/* Table */
+.table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); }
+table { border-collapse: collapse; width: 100%; min-width: 820px; font-size: 0.93rem; }
+th, td { text-align: left; vertical-align: top; padding: 10px 12px; border-bottom: 1px solid var(--line-soft); }
+thead th { font-size: 0.76rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--ink-3); border-bottom: 1px solid var(--line); background: var(--panel); }
+tbody tr:last-child td { border-bottom: 0; }
+td.num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
+td strong { font-weight: 600; }
+
+/* Steps */
+ol.steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 28px; counter-reset: step; }
+ol.steps > li { counter-increment: step; display: grid; grid-template-columns: 40px minmax(0, 1fr); gap: 4px 14px; }
+ol.steps > li::before { content: counter(step); grid-row: span 3; font-family: var(--font-display); font-stretch: 85%; font-weight: 760; font-size: 1.05rem; width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; border: 1.5px solid var(--accent); color: var(--accent); }
+ol.steps .body { display: grid; gap: 10px; min-width: 0; grid-column: 2; }
+.cmd { position: relative; background: var(--code-bg); border-radius: 6px; min-width: 0; }
+.cmd pre { margin: 0; padding: 12px 14px; padding-right: 76px; overflow-x: auto; font-family: var(--font-mono); font-size: 0.82rem; line-height: 1.55; white-space: pre; }
+.cmd button { position: absolute; top: 8px; right: 8px; font: 600 0.78rem var(--font-body); padding: 4px 10px; border-radius: 5px; border: 1px solid var(--line); background: var(--panel); color: var(--ink); cursor: pointer; }
+.cmd button:hover { border-color: var(--accent); }
+.cmd-label { font-size: 0.85rem; color: var(--ink-3); }
+
+/* Troubleshooting */
+.fixes { display: grid; gap: 0; border-top: 1px solid var(--line); }
+.fix { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.4fr); gap: 16px; padding: 14px 0; border-bottom: 1px solid var(--line); }
+.fix .sym { font-weight: 600; }
+@media (max-width: 600px) { .fix { grid-template-columns: 1fr; gap: 4px; } }
+
+/* Callout */
+.callout { border: 1px solid var(--warn-line); background: var(--warn-tint); border-radius: 8px; padding: 18px 20px; display: grid; gap: 12px; }
+.callout h2 { font-size: 1.35rem; display: flex; align-items: center; gap: 10px; }
+.callout .ico { flex: none; width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; background: var(--warn); color: var(--warn-tint); font: 800 0.85rem var(--font-body); }
+
+/* Confidence */
+.conf { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+@media (max-width: 700px) { .conf { grid-template-columns: 1fr; } }
+.conf > div { border-top: 3px solid var(--line); padding-top: 10px; display: grid; gap: 6px; align-content: start; }
+.conf > div.lvl-high { border-top-color: var(--good); }
+.conf > div.lvl-mid { border-top-color: var(--bar); }
+.conf > div.lvl-low { border-top-color: var(--warn-line); }
+.conf h3 { font-size: 1rem; }
+.sources { columns: 2 320px; column-gap: 32px; font-size: 0.88rem; margin: 0; padding-left: 1.1em; }
+.sources li { break-inside: avoid; margin-bottom: 6px; overflow-wrap: anywhere; }
+footer { color: var(--ink-3); font-size: 0.88rem; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .fill { transition: width 0.25s ease; }
+}
+</style>
+
+<div class="page">
+
+<header>
+  <div class="eyebrow">Upscale plan · youtube.com/watch?v=K3VECwH0Drk · researched 6 Oct 2026</div>
+  <h1>Samanola Siripa, from grainy 480p to clean 1080p</h1>
+  <p class="lede">Start with the free tools. Video2X runs the Real-ESRGAN general model, which removes grain and upscales in one pass. Then ffmpeg copies the original audio into the new file without touching it. Pay for Topaz only if a 10-second test leaves faces looking waxy or grain still showing.</p>
+  <div class="tape" role="list">
+    <div role="listitem"><span class="k">Source</span><span class="v">480p YouTube copy of analog-era TV footage, grainy</span></div>
+    <div role="listitem"><span class="k">Target</span><span class="v">1440×1080 if 4:3<br>1920×1080 if 16:9</span></div>
+    <div role="listitem"><span class="k">Audio</span><span class="v">Copied bit for bit, never re-encoded</span></div>
+    <div role="listitem"><span class="k">Budget</span><span class="v">$0 on the free route<br>$59 at most (one month of Topaz)</span></div>
+  </div>
+</header>
+
+<section aria-labelledby="routes-h">
+  <div class="col" style="display:grid;gap:8px">
+    <h2 id="routes-h">Three routes</h2>
+    <p class="muted">Routes 1 and 2 use the same software and give the same picture. The only difference is whose GPU does the work. Route 3 is a paid app with more controls and better face recovery.</p>
+  </div>
+  <div class="routes">
+    <article class="route pick">
+      <div class="route-head"><span class="tag">Route 1 · your PC</span><span class="pill" aria-label="Recommended: start here">✓ Start here</span></div>
+      <h3>Video2X on your own computer</h3>
+      <div class="price">$0 <small>free, open source</small></div>
+      <dl class="facts">
+        <div><dt>Software</dt><dd>Video2X 6.4.0 with the Real-ESRGAN general models</dd></div>
+        <div><dt>Needs</dt><dd>A CPU with AVX2 and a GPU with Vulkan support: NVIDIA GTX 600 or newer, AMD Radeon HD 7000 or newer, Intel 6th-gen graphics or newer on Windows. No CUDA needed.</dd></div>
+        <div><dt>Time</dt><dd data-time="mid">About 8–16 min on a mid-range GPU. Hours on old integrated graphics.</dd></div>
+        <div><dt>Choose if</dt><dd>You have a gaming or workstation GPU from roughly 2016 on</dd></div>
+      </dl>
+    </article>
+    <article class="route">
+      <div class="route-head"><span class="tag">Route 2 · rented GPU</span></div>
+      <h3>Same tools, on a cloud GPU</h3>
+      <div class="price" data-runpod-price>$0–0.55 <small>per job</small></div>
+      <dl class="facts">
+        <div><dt>Options</dt><dd>Google Colab free tier with the official Video2X notebook ($0, usually a T4, 12-hour sessions at most). Or RunPod RTX 4090 at $0.34–0.69/h, billed per second.</dd></div>
+        <div><dt>Time</dt><dd>Mostly setup and uploading. The upscale itself takes minutes on a 4090.</dd></div>
+        <div><dt>Choose if</dt><dd>You have a laptop, a Mac, or a GPU without Vulkan</dd></div>
+      </dl>
+    </article>
+    <article class="route">
+      <div class="route-head"><span class="tag">Route 3 · paid app</span></div>
+      <h3>Topaz Video, one month</h3>
+      <div class="price">$59 <small>cancel after one month</small></div>
+      <dl class="facts">
+        <div><dt>Why</dt><dd>Separate models for denoising (Nyx), general restoration (Proteus) and faces (Iris), all with sliders. Cheaper alternatives: AVCLabs $39.95/month, HitPaw VikPea $43.19/month.</dd></div>
+        <div><dt>Time</dt><dd>Faster than real time on an RTX 4090. It still runs on your own GPU.</dd></div>
+        <div><dt>Choose if</dt><dd>The free test leaves faces smeared or grain behind, and you want a GUI with sliders</dd></div>
+      </dl>
+    </article>
+  </div>
+</section>
+
+<section aria-labelledby="source-h">
+  <div class="col" style="display:grid;gap:12px">
+    <h2 id="source-h">What the footage is, and why it matters</h2>
+    <p>Two pages that link this video ID list it as <em>“ITN theme song – Samanola Siripa Piyuma Dowagena”</em>, uploaded by Muditha Liyanagama. A Sinhala-music forum thread calls it the theme ITN's Sinhala service used to air. ITN started broadcasting in 1979, so this is almost certainly analog PAL-era live-action TV, not animation. Check the title on YouTube matches before you start.</p>
+  </div>
+  <div class="res-wrap">
+    <figure>
+      <div class="diagram">
+        <svg viewBox="0 0 520 318" role="img" aria-labelledby="res-t res-d">
+          <title id="res-t">Source and target frame sizes drawn to scale</title>
+          <desc id="res-d">A 640 by 480 source sits inside a 1440 by 1080 target. Both are 4:3 and are centred in a 1920 by 1080 widescreen frame, leaving pillarbox bars on each side.</desc>
+          <defs>
+            <pattern id="hatch" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+              <rect width="8" height="8" style="fill: var(--panel)"/>
+              <line x1="0" y1="0" x2="0" y2="8" style="stroke: var(--line); stroke-width: 3"/>
+            </pattern>
+          </defs>
+          <!-- 1920x1080 at 0.25 scale = 480x270 -->
+          <rect x="20" y="24" width="480" height="270" style="fill: url(#hatch); stroke: var(--ink-3); stroke-width: 1; stroke-dasharray: 5 4"/>
+          <!-- 1440x1080 = 360x270 centred -->
+          <rect x="80" y="24" width="360" height="270" style="fill: var(--accent-tint); stroke: var(--accent); stroke-width: 2"/>
+          <!-- 640x480 = 160x120 centred -->
+          <rect x="180" y="99" width="160" height="120" style="fill: var(--panel); stroke: var(--ink); stroke-width: 1.5"/>
+          <text x="20" y="16" class="svg-ink3" style="font: 500 11px var(--font-mono)">1920×1080 widescreen frame</text>
+          <text x="90" y="44" style="font: 600 13px var(--font-body); fill: var(--accent)">Target 1440×1080</text>
+          <text x="90" y="60" class="svg-ink2" style="font: 400 11px var(--font-body)">1.56 million pixels</text>
+          <text x="260" y="155" text-anchor="middle" class="svg-ink" style="font: 600 13px var(--font-body)">Source 640×480</text>
+          <text x="260" y="171" text-anchor="middle" class="svg-ink2" style="font: 400 11px var(--font-body)">0.31 million pixels</text>
+          <text x="50" y="164" text-anchor="middle" class="svg-ink3" style="font: 500 10px var(--font-mono)" transform="rotate(-90 50 164)">pillarbox</text>
+          <text x="470" y="164" text-anchor="middle" class="svg-ink3" style="font: 500 10px var(--font-mono)" transform="rotate(90 470 164)">pillarbox</text>
+        </svg>
+      </div>
+      <figcaption>Drawn to scale, assuming the usual 4:3 shape of 1980s TV. Each side grows 2.25×, so the upscaler has to invent about 4 of every 5 output pixels. That is why the choice of model matters more than any setting.</figcaption>
+    </figure>
+    <ul class="plain">
+      <li><strong>Live action, so use the Real-ESRGAN <em>general</em> models.</strong> Skip the anime-tuned options in the same tools (Real-CUGAN, Anime4K, realesr-animevideov3, waifu2x). Users restoring VHS footage report those make real faces look “too cartoony”.</li>
+      <li><strong>Probably 4:3.</strong> Upscale to 1440×1080 and let the player add the side bars. Stretching it to 1920 wide distorts every face.</li>
+      <li><strong>Possibly interlaced.</strong> Analog TV was recorded as alternating half-frames. If you see comb-like lines on moving edges, deinterlace before upscaling. An upscaler will sharpen the combing into the picture.</li>
+      <li><strong>YouTube's 480p is a re-compressed copy.</strong> The upload was named as an <code>.mkv</code> file, so the uploader likely still has a cleaner original. Asking for it gives a better result than any setting.</li>
+      <li><strong>Length not confirmed.</strong> Set it in the cost chart below to get time and cost estimates.</li>
+    </ul>
+  </div>
+</section>
+
+<section aria-labelledby="pipe-h">
+  <div class="col" style="display:grid;gap:8px">
+    <h2 id="pipe-h">The pipeline</h2>
+    <p class="muted">Only the video goes through processing. The audio goes around it in a separate lane and is copied into the final file unchanged, so it stays exactly as it is now.</p>
+  </div>
+  <figure>
+    <div class="diagram pipe scroll-x">
+      <svg viewBox="0 0 980 258" role="img" aria-labelledby="pipe-t pipe-d">
+        <title id="pipe-t">Upscaling pipeline with a separate audio lane</title>
+        <desc id="pipe-d">The source file splits into video and audio. Video passes through inspect and test, optional pre-clean, then a 4x Real-ESRGAN upscale, then the final encode, which scales to 1080 lines. Audio skips all processing and is stream-copied into the final encode. The output is a 1080p MKV with the original audio.</desc>
+        <defs>
+          <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" style="fill: var(--ink-3)"/>
+          </marker>
+          <marker id="arr-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" style="fill: var(--good)"/>
+          </marker>
+        </defs>
+        <!-- lane labels -->
+        <text x="150" y="20" class="svg-ink3" style="font: 500 10px var(--font-mono); letter-spacing: 1px">VIDEO LANE</text>
+        <text x="150" y="246" class="svg-ink3" style="font: 500 10px var(--font-mono); letter-spacing: 1px">AUDIO LANE</text>
+
+        <!-- Source (tall) -->
+        <rect x="20" y="34" width="120" height="190" rx="6" style="fill: var(--panel); stroke: var(--ink); stroke-width: 1.5"/>
+        <text x="80" y="110" text-anchor="middle" class="svg-ink" style="font: 700 14px var(--font-body)">Source file</text>
+        <text x="80" y="130" text-anchor="middle" class="svg-ink2" style="font: 400 12px var(--font-body)">480p, grainy</text>
+        <text x="80" y="146" text-anchor="middle" class="svg-ink2" style="font: 400 12px var(--font-body)">+ original audio</text>
+
+        <!-- Inspect -->
+        <rect x="170" y="44" width="140" height="64" rx="6" style="fill: var(--panel); stroke: var(--line); stroke-width: 1.5"/>
+        <text x="240" y="71" text-anchor="middle" class="svg-ink" style="font: 600 13px var(--font-body)">Inspect + test</text>
+        <text x="240" y="89" text-anchor="middle" class="svg-ink3" style="font: 400 11px var(--font-body)">ffprobe, 10-second trial</text>
+
+        <!-- Pre-clean optional -->
+        <rect x="330" y="44" width="140" height="64" rx="6" style="fill: var(--panel); stroke: var(--ink-3); stroke-width: 1.5; stroke-dasharray: 5 4"/>
+        <text x="400" y="71" text-anchor="middle" class="svg-ink" style="font: 600 13px var(--font-body)">Pre-clean</text>
+        <text x="400" y="89" text-anchor="middle" class="svg-ink3" style="font: 400 11px var(--font-body)">optional: deinterlace, denoise</text>
+
+        <!-- Upscale -->
+        <rect x="490" y="44" width="140" height="64" rx="6" style="fill: var(--accent-tint); stroke: var(--accent); stroke-width: 1.5"/>
+        <text x="560" y="71" text-anchor="middle" style="font: 700 13px var(--font-body); fill: var(--accent)">Upscale ×4</text>
+        <text x="560" y="89" text-anchor="middle" class="svg-ink2" style="font: 400 11px var(--font-body)">Real-ESRGAN general</text>
+
+        <!-- Final encode (tall) -->
+        <rect x="650" y="34" width="140" height="190" rx="6" style="fill: var(--panel); stroke: var(--ink); stroke-width: 1.5"/>
+        <text x="720" y="100" text-anchor="middle" class="svg-ink" style="font: 700 14px var(--font-body)">Final encode</text>
+        <text x="720" y="120" text-anchor="middle" class="svg-ink2" style="font: 400 12px var(--font-body)">scale to 1080 lines</text>
+        <text x="720" y="136" text-anchor="middle" class="svg-ink2" style="font: 400 12px var(--font-body)">H.264, CRF 17</text>
+        <text x="720" y="152" text-anchor="middle" class="svg-ink2" style="font: 400 12px var(--font-body)">+ audio copied in</text>
+
+        <!-- Output -->
+        <rect x="820" y="34" width="140" height="190" rx="6" style="fill: var(--good-tint); stroke: var(--good); stroke-width: 2"/>
+        <text x="890" y="110" text-anchor="middle" class="svg-ink" style="font: 700 14px var(--font-body)">1080p .mkv</text>
+        <text x="890" y="130" text-anchor="middle" class="svg-ink2" style="font: 400 12px var(--font-body)">1440×1080 (4:3)</text>
+        <text x="890" y="146" text-anchor="middle" class="svg-ink2" style="font: 400 12px var(--font-body)">same audio track</text>
+
+        <!-- video arrows -->
+        <line x1="140" y1="76" x2="166" y2="76" style="stroke: var(--ink-3); stroke-width: 1.5" marker-end="url(#arr)"/>
+        <line x1="310" y1="76" x2="326" y2="76" style="stroke: var(--ink-3); stroke-width: 1.5" marker-end="url(#arr)"/>
+        <line x1="470" y1="76" x2="486" y2="76" style="stroke: var(--ink-3); stroke-width: 1.5" marker-end="url(#arr)"/>
+        <line x1="630" y1="76" x2="646" y2="76" style="stroke: var(--ink-3); stroke-width: 1.5" marker-end="url(#arr)"/>
+        <line x1="790" y1="129" x2="816" y2="129" style="stroke: var(--ink-3); stroke-width: 1.5" marker-end="url(#arr)"/>
+
+        <!-- audio bypass -->
+        <line x1="140" y1="196" x2="646" y2="196" style="stroke: var(--good); stroke-width: 2" marker-end="url(#arr-a)"/>
+        <rect x="262" y="185" width="262" height="22" rx="4" style="fill: var(--panel)"/>
+        <text x="393" y="200" text-anchor="middle" style="font: 500 11px var(--font-mono); fill: var(--good)">copied as-is with -c:a copy</text>
+      </svg>
+    </div>
+    <figcaption>The dashed box is optional. Add it only if the 10-second test shows combing or heavy grain left over.</figcaption>
+  </figure>
+</section>
+
+<section aria-labelledby="cost-h">
+  <div class="col" style="display:grid;gap:8px">
+    <h2 id="cost-h">What this one video costs on each option</h2>
+    <p class="muted">Apps are priced at one month, the cheapest way to cover a single job. The per-second cloud API and RunPod change with the video's length.</p>
+  </div>
+  <div class="chart">
+    <div class="control">
+      <label for="dur">Video length</label>
+      <input type="range" id="dur" min="1" max="15" step="0.5" value="4" aria-describedby="dur-note">
+      <output id="dur-out" for="dur">4:00</output>
+      <span id="dur-note" class="small muted">Not confirmed. 4:00 is a guess for a TV theme song, so set the real length.</span>
+    </div>
+    <div class="bars" id="bars" aria-label="Cost per option in US dollars"></div>
+    <div class="axis" aria-hidden="true"><div></div><div class="ticks" id="ticks"></div></div>
+    <p class="small muted" id="chart-note">US dollars. The light part of the RunPod bar is the range between a cheap Community GPU with quick setup and a Secure GPU with slow setup.</p>
+  </div>
+
+  <div class="table-wrap" role="region" aria-label="Tool comparison table" tabindex="0">
+    <table>
+      <thead><tr><th>Tool</th><th>How you pay</th><th>For this job</th><th>Platforms</th><th>Fit for this video</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Video2X 6.4.0</strong></td><td>Free, open source (AGPL-3.0)</td><td class="num">$0</td><td>Windows, Linux; macOS through a container</td><td>Best free fit. Includes <code>realesr-general-x4v3</code> and its lighter-denoise twin. No release since Jan 2025.</td></tr>
+        <tr><td><strong>Google Colab, free tier</strong></td><td>Free, with usage limits</td><td class="num">$0</td><td>Browser</td><td>Official Video2X notebook. Usually a T4 GPU, 12-hour sessions at most. The project warns that back-to-back sessions can get an account banned.</td></tr>
+        <tr><td><strong>Colab Pro</strong></td><td>$9.99/month for 100 compute units</td><td class="num">$9.99</td><td>Browser</td><td>A T4 uses about 1.2–1.8 units an hour, so roughly 55–80 hours. Far more than this job needs.</td></tr>
+        <tr><td><strong>RunPod RTX 4090</strong></td><td>$0.34/h Community, $0.69/h Secure, billed per second</td><td class="num" data-runpod-cell>$0.15–0.55</td><td>Browser, Docker</td><td>Run the Video2X container image. Stop the pod when done or it keeps billing.</td></tr>
+        <tr><td><strong>CapCut</strong></td><td>Free plan exports 1080p. Standard about $9.99/month. Pro $19.99/month or $179.99/year.</td><td class="num">$0–19.99</td><td>Windows, Mac, web, mobile</td><td>Little control over grain. This research did not confirm how good its upscaling is.</td></tr>
+        <tr><td><strong>AVCLabs Video Enhancer AI</strong></td><td>$39.95/month, $119.95/year, $299.90 lifetime</td><td class="num">$39.95</td><td>Windows, Mac</td><td>One 2026 review calls 480p→1080p its strongest use case. Has denoise, deinterlace and face models. 30-day refund.</td></tr>
+        <tr><td><strong>HitPaw VikPea</strong></td><td>$43.19/month, $99.99/year, $350.39 perpetual (promotional prices)</td><td class="num">$43.19</td><td>Windows, Mac</td><td>The free tier previews but can't export. Has face and denoise models.</td></tr>
+        <tr><td><strong>Topaz Video, Personal</strong></td><td>$59/month or $299/year. Subscription only since Oct 2025.</td><td class="num">$59</td><td>Windows, Mac</td><td>Most controls. Nyx denoises, Proteus restores, Iris fixes faces. Renders locally without limit. The 25 cloud credits a month can't cover this job: Starlight costs 30 credits per minute at 1080p.</td></tr>
+        <tr><td><strong>Topaz through the Segmind API</strong></td><td>$0.125 per second of video</td><td class="num" data-api-cell>$30.00</td><td>API</td><td>Pay per clip, but no sliders and no way to preview before paying.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section aria-labelledby="steps-h" class="col">
+  <h2 id="steps-h">Steps</h2>
+  <p class="muted">The commands use the free tools: ffmpeg and Video2X. On Windows, run them in PowerShell from the folder that holds your file. On Colab, the notebook has its own cells for steps 4 and 5.</p>
+  <ol class="steps">
+    <li>
+      <div class="body">
+        <h3>Get the best copy you can</h3>
+        <p>First ask the uploader for their original file. Their YouTube upload was named as an <code>.mkv</code>, and that original will have less compression damage than YouTube's 480p stream. If you can't get it, use the highest-quality stream YouTube offers, and read the rights note below first. Name the file <code>source.mkv</code>.</p>
+      </div>
+    </li>
+    <li>
+      <div class="body">
+        <h3>Inspect it</h3>
+        <p>Read four things from the output. <code>width</code>×<code>height</code> and <code>display_aspect_ratio</code> give the shape: 640×480 or 4:3 means a 1440×1080 target, and 854×480 means 1920×1080. <code>field_order</code> should say <code>progressive</code>; <code>tt</code> or <code>bb</code> means interlaced. <code>r_frame_rate</code> should be 25 for PAL.</p>
+        <div class="cmd"><pre><code>ffprobe -v error -select_streams v:0 -show_entries stream=width,height,display_aspect_ratio,sample_aspect_ratio,field_order,r_frame_rate -of default=nw=1 source.mkv</code></pre><button type="button">Copy</button></div>
+      </div>
+    </li>
+    <li>
+      <div class="body">
+        <h3>Cut a 10-second test clip</h3>
+        <p>Pick a stretch with a face and some movement. Change the start time to suit.</p>
+        <div class="cmd"><pre><code>ffmpeg -ss 00:00:30 -i source.mkv -t 10 -c copy test.mkv</code></pre><button type="button">Copy</button></div>
+      </div>
+    </li>
+    <li>
+      <div class="body">
+        <h3>Run both general models on the test clip</h3>
+        <p><code>realesr-general-x4v3</code> removes more grain. <code>realesr-general-wdn-x4v3</code> denoises less and keeps more texture. Compare them full-screen and pick the one where faces look like skin, not plastic. In the Video2X GUI, choose processor Real-ESRGAN, the model, and scale 4.</p>
+        <span class="cmd-label">Stronger denoise</span>
+        <div class="cmd"><pre><code>video2x -i test.mkv -o test-x4v3.mkv -p realesrgan -s 4 --realesrgan-model realesr-general-x4v3 -c libx264rgb -e crf=12 -e preset=slow</code></pre><button type="button">Copy</button></div>
+        <span class="cmd-label">Lighter denoise, more texture</span>
+        <div class="cmd"><pre><code>video2x -i test.mkv -o test-wdn.mkv -p realesrgan -s 4 --realesrgan-model realesr-general-wdn-x4v3 -c libx264rgb -e crf=12 -e preset=slow</code></pre><button type="button">Copy</button></div>
+        <p class="small muted">Set the encoder yourself as shown. Don't rely on Video2X's defaults. CRF 12 is a near-lossless intermediate, so quality is only spent once, in step 6.</p>
+      </div>
+    </li>
+    <li>
+      <div class="body">
+        <h3>Upscale the whole video with the winner</h3>
+        <p>Same command, with the full file as input. The output is about 2560×1920. It gets scaled down to 1080 lines in the next step, which also tightens the detail.</p>
+        <div class="cmd"><pre><code>video2x -i source.mkv -o upscaled-4x.mkv -p realesrgan -s 4 --realesrgan-model realesr-general-wdn-x4v3 -c libx264rgb -e crf=12 -e preset=slow</code></pre><button type="button">Copy</button></div>
+      </div>
+    </li>
+    <li>
+      <div class="body">
+        <h3>Scale to 1080, encode, and copy the original audio in</h3>
+        <p>One command does three things. It takes the picture from the upscaled file and scales it to 1080 lines high, keeping its shape. It encodes that picture once, at high quality. And it copies the audio from <code>source.mkv</code> without decoding it. MKV holds YouTube's Opus or AAC audio as-is.</p>
+        <div class="cmd"><pre><code>ffmpeg -i upscaled-4x.mkv -i source.mkv -map 0:v:0 -map 1:a:0 -vf "scale=-2:1080:flags=lanczos" -c:v libx264 -preset slow -crf 17 -pix_fmt yuv420p -c:a copy final-1080p.mkv</code></pre><button type="button">Copy</button></div>
+        <p class="small muted">CRF 17 looks almost identical to the input. If you upload the file, YouTube re-encodes it anyway. Its guidance for 1080p at 24–30 fps is about 8 Mbps.</p>
+      </div>
+    </li>
+    <li>
+      <div class="body">
+        <h3>Compare before you call it done</h3>
+        <p>Play the source and the result side by side on the largest screen you have, at the same moments. Check faces, the station logo and any text, and fine patterns such as fabric. If something looks off, use the fixes below and rerun from step 4 on the test clip.</p>
+      </div>
+    </li>
+  </ol>
+</section>
+
+<section aria-labelledby="fix-h" class="col">
+  <h2 id="fix-h">If the test looks wrong</h2>
+  <div class="fixes">
+    <div class="fix"><div class="sym">Faces look waxy or plastic</div><div>Switch to <code>realesr-general-wdn-x4v3</code>. For finer control, the Real-ESRGAN Python script sets denoise strength from 0 to 1 with <code>-dn</code>. One VHS restorer used 0.3, and the default is 0.5. In Topaz, lower Iris or turn it off, and keep Proteus denoise around 10–20.</div></div>
+    <div class="fix"><div class="sym">Grain is still visible</div><div>Use <code>realesr-general-x4v3</code>. If that isn't enough, add a light denoise before upscaling: <code>ffmpeg -i source.mkv -vf "hqdn3d=2:1.5:4:3" -c:v ffv1 -c:a copy clean.mkv</code>, then upscale <code>clean.mkv</code>. Topaz advises denoising before upscaling. Real-ESRGAN users report it makes little difference, because the model already denoises. Test both.</div></div>
+    <div class="fix"><div class="sym">Comb-like lines on moving edges</div><div>The source is interlaced. Add <code>bwdif=0,</code> at the front of the filter in the pre-clean command (<code>-vf "bwdif=0,hqdn3d=2:1.5:4:3"</code>), or use <code>-vf bwdif=0</code> alone.</div></div>
+    <div class="fix"><div class="sym">Bright halos around edges</div><div>Don't add sharpening. Denoising and upscaling already add apparent detail, and Topaz's own guidance warns against stacking a sharpen pass on top.</div></div>
+    <div class="fix"><div class="sym">People look wide and squat</div><div>The 4:3 picture was stretched to 16:9. Keep <code>scale=-2:1080</code> as written: it sets the height and works out the width from the picture's shape.</div></div>
+    <div class="fix"><div class="sym">Colab fails with <code>vkQueueSubmit failed</code></div><div>One user reported this on a T4 in Aug 2026 (<a href="https://github.com/k4yt3x/video2x/issues/1509">issue 1509</a>, not yet confirmed by others). Try a smaller tile size, or switch to RunPod.</div></div>
+  </div>
+</section>
+
+<section class="col">
+  <div class="callout" role="note">
+    <h2><span class="ico" aria-hidden="true">!</span>Rights and downloading</h2>
+    <ul class="plain">
+      <li>YouTube's Terms of Service don't allow downloading except through YouTube's own features or with permission from YouTube and the rights holders. Third-party downloaders such as yt-dlp work technically, but using one on this video breaks those terms. In Germany, a court in 2024 held that youtube-dl gets around YouTube's technical protection.</li>
+      <li>The footage and song most likely belong to ITN and the song's creators, not to the uploader.</li>
+      <li>If you re-upload the improved version, Content ID will usually still match it. That can mean a claim, a block or a strike, and YouTube won't monetize an upscaled copy as original content.</li>
+      <li>The clean path is to get the original file from the uploader or an archive copy from ITN. Keep the result for personal viewing unless you have permission to share it.</li>
+    </ul>
+  </div>
+</section>
+
+<section aria-labelledby="conf-h">
+  <div class="col" style="display:grid;gap:8px">
+    <h2 id="conf-h">How sure each part is</h2>
+    <p class="muted">The research harness checked claims adversarially, but most vendor pages were blocked from this environment. Here is what holds up and how firmly.</p>
+  </div>
+  <div class="conf">
+    <div class="lvl-high"><h3>Confirmed against the primary source</h3><p class="small">Everything about Video2X: AGPL license, Real-ESRGAN/Real-CUGAN models through Vulkan, hardware requirements, the free Colab notebook and its ban warning, and 6.4.0 as the latest release (24 Jan 2025). Three of three reviewers confirmed each claim. The general-x4v3 models and the CLI syntax come from the project's own changelog and docs.</p></div>
+    <div class="lvl-mid"><h3>Cross-checked prices; vendor pages blocked</h3><p class="small">Topaz, AVCLabs, HitPaw, CapCut, RunPod and Colab prices. Each matched in two separate searches of 2026 roundups, but nobody read the vendor's own page. Promotional prices change, so confirm at checkout.</p></div>
+    <div class="lvl-low"><h3>From search summaries only</h3><p class="small">The video's identity (two pages that link this ID, plus a forum thread), processing speeds, and the Topaz slider advice. Speed figures come from different GPUs and pipelines.</p></div>
+    <div class="lvl-low"><h3>My estimates</h3><p class="small">Processing times and RunPod job cost: about 2–4× the video's length on a mid-range GPU, plus 20–40 minutes of cloud setup. Also the choice of the general models for this footage, and the CRF values.</p></div>
+  </div>
+  <h3 style="margin-top:8px">Sources</h3>
+  <ol class="sources">
+    <li><a href="https://github.com/k4yt3x/video2x">Video2X repository and README</a></li>
+    <li><a href="https://github.com/k4yt3x/video2x/releases">Video2X releases (6.4.0, Jan 2025)</a></li>
+    <li><a href="https://raw.githubusercontent.com/k4yt3x/video2x/master/CHANGELOG.md">Video2X changelog: realesr-general-x4v3 and -wdn-x4v3</a></li>
+    <li><a href="https://github.com/k4yt3x/video2x/blob/master/docs/book/src/running/command-line.md">Video2X command-line docs</a></li>
+    <li><a href="https://colab.research.google.com/drive/1gWEwcA9y57EsxwOjmLNmNMXPsafw0kGo">Official Video2X Colab notebook</a></li>
+    <li><a href="https://forum.unilang.org/viewtopic.php?t=40300">UniLang forum: Sinhala music thread linking this video</a></li>
+    <li><a href="https://chordify.net/chords/itn-theme-song-samanola-siripa-piyuma-dowagena-mkv-muditha-liyanagama">Chordify page for the same upload</a></li>
+    <li><a href="https://en.wikipedia.org/wiki/Independent_Television_Network">Independent Television Network (Wikipedia)</a></li>
+    <li><a href="https://magichour.ai/blog/topaz-video-ai-pricing">Topaz Video pricing explained, 2026 (Magic Hour)</a></li>
+    <li><a href="https://cgpress.org/archives/topaz-labs-ends-perpetual-licenses-with-launch-of-topaz-studio-subscription.html">Topaz ends perpetual licenses (CGPress)</a></li>
+    <li><a href="https://community.topazlabs.com/t/starlight-mini-price/93882">Topaz community: Starlight cloud credit cost</a></li>
+    <li><a href="https://www.segmind.com/models/topaz-video-upscale/pricing">Topaz Video Upscale on Segmind, per-second pricing</a></li>
+    <li><a href="https://www.nemovideo.com/blog/avclabs-video-enhancer-ai-review">AVCLabs Video Enhancer AI review, 2026</a></li>
+    <li><a href="https://toolradar.com/tools/hitpaw-vikpea/pricing">HitPaw VikPea pricing (Toolradar)</a></li>
+    <li><a href="https://eesel.ai/blog/capcut-pricing">CapCut pricing 2026 (eesel)</a></li>
+    <li><a href="https://computeprices.com/providers/runpod/gpus/rtx4090">RunPod RTX 4090 price tracker</a></li>
+    <li><a href="https://www.spheron.network/blog/runpod-vs-vastai-2026/">RunPod vs Vast.ai 2026 (Spheron)</a></li>
+    <li><a href="https://gpuperhour.com/blog/google-colab-alternatives">Colab compute units per hour (gpuperhour)</a></li>
+    <li><a href="https://mintlify.com/xinntao/Real-ESRGAN/models/general-models">Real-ESRGAN general models and denoise strength</a></li>
+    <li><a href="https://forum.selur.net/archive/index.php/thread-4034.html">Selur Hybrid forum: Real-ESRGAN on VHS/8mm footage</a></li>
+    <li><a href="https://community.topazlabs.com/t/education-upscale-workflow/100626">Topaz community: upscale workflow guidance</a></li>
+    <li><a href="https://invideo.io/faq/what-are-the-best-topaz-video-ai-settings-for-fixing/">Topaz settings for waxy faces (invideo)</a></li>
+    <li><a href="https://www.runpod.io/blog/upscaling-videos-vsgan-tensorrt">RunPod blog: upscaling with VSGAN and TensorRT</a></li>
+    <li><a href="https://community.topazlabs.com/t/video-ai-5-5-x-user-benchmarking-results/83408">Topaz Video AI user benchmarks</a></li>
+    <li><a href="https://support.google.com/youtube/answer/1722171">YouTube recommended upload encoding settings</a></li>
+    <li><a href="https://www.youtube.com/terms">YouTube Terms of Service</a></li>
+    <li><a href="https://torrentfreak.com/court-rejects-appeal-of-youtube-dl-hosting-provider-uberspace-241127/">Hamburg court ruling on youtube-dl (TorrentFreak)</a></li>
+    <li><a href="https://support.google.com/youtube/answer/2797466">YouTube Help: Content ID, claims and strikes</a></li>
+    <li><a href="https://support.google.com/youtube/answer/1311392">YouTube Help: reused content policy</a></li>
+  </ol>
+</section>
+
+<footer>Prices in US dollars, checked 6 October 2026. Vendor promotions change often.</footer>
+</div>
+
+<script>
+(function () {
+  var RATE_API = 0.125;          // Segmind Topaz, $ per second of video
+  var RP_LO = 0.34, RP_HI = 0.69; // RunPod 4090 $/h Community / Secure
+  var LABEL_ROOM = 104;           // px reserved at the end of each track for the value label
+
+  var options = [
+    { group: 'Free', name: 'Video2X on your PC', sub: 'electricity only', cost: function () { return [0, 0]; }, tip: 'Free and open source. Needs a Vulkan GPU.' },
+    { group: 'Free', name: 'Video2X on Colab (free tier)', sub: 'T4 GPU, usage limits', cost: function () { return [0, 0]; }, tip: 'Official notebook. Free tier, no guaranteed GPU.' },
+    { group: 'Cloud GPU', name: 'RunPod RTX 4090', sub: 'per-second billing', cost: function (m) {
+        var lo = (m * 0.5 + 20) / 60 * RP_LO, hi = (m * 1.5 + 40) / 60 * RP_HI; return [lo, hi]; },
+      tip: 'Estimate: upscale time plus 20–40 min of setup, at $0.34–0.69 per hour.' },
+    { group: 'Cloud GPU', name: 'Colab Pro, one month', sub: '100 compute units', cost: function () { return [9.99, 9.99]; }, tip: '$9.99 a month. Far more GPU time than this job needs.' },
+    { group: 'Paid app, one month', name: 'AVCLabs', sub: '$299.90 lifetime option', cost: function () { return [39.95, 39.95]; }, tip: '$39.95/month, $119.95/year, $299.90 lifetime.' },
+    { group: 'Paid app, one month', name: 'HitPaw VikPea', sub: 'promotional price', cost: function () { return [43.19, 43.19]; }, tip: '$43.19/month, $99.99/year, $350.39 perpetual (promotional).' },
+    { group: 'Paid app, one month', name: 'Topaz Video Personal', sub: 'subscription only', cost: function () { return [59, 59]; }, tip: '$59/month or $299/year. No perpetual license since Oct 2025.' },
+    { group: 'Pay per second', name: 'Topaz through Segmind API', sub: '$0.125 per second of video', cost: function (m) { var c = m * 60 * RATE_API; return [c, c]; }, tip: 'Scales with length: $7.50 per minute of video.' }
+  ];
+
+  var bars = document.getElementById('bars');
+  var ticks = document.getElementById('ticks');
+  var dur = document.getElementById('dur');
+  var out = document.getElementById('dur-out');
+  var tip = document.createElement('div');
+  tip.className = 'tip'; tip.hidden = true; tip.setAttribute('role', 'tooltip');
+
+  function money(v) { return v === 0 ? '$0' : '$' + (v < 10 ? v.toFixed(2) : v.toFixed(2).replace(/\.00$/, '')); }
+  function mmss(m) { var s = Math.round(m * 60); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); }
+  function niceMax(v) { var steps = [20, 40, 60, 80, 100, 120, 160, 200]; for (var i = 0; i < steps.length; i++) if (v <= steps[i]) return steps[i]; return Math.ceil(v / 50) * 50; }
+
+  function render() {
+    var m = parseFloat(dur.value);
+    out.textContent = mmss(m);
+    var vals = options.map(function (o) { return o.cost(m); });
+    var max = niceMax(Math.max.apply(null, vals.map(function (v) { return v[1]; })));
+    var step = max <= 80 ? 20 : max <= 160 ? 40 : 50;
+
+    bars.innerHTML = '';
+    var lastGroup = null;
+    options.forEach(function (o, i) {
+      if (o.group !== lastGroup) {
+        var g = document.createElement('div'); g.className = 'group-label'; g.textContent = o.group; bars.appendChild(g); lastGroup = o.group;
+      }
+      var lo = vals[i][0], hi = vals[i][1];
+      var label = lo === hi ? money(hi) : '≈ ' + money(lo) + '–' + money(hi).replace('$', '');
+      var row = document.createElement('div');
+      row.className = 'bar-row'; row.tabIndex = 0;
+      row.setAttribute('aria-label', o.name + ': ' + label + '. ' + o.tip);
+      row.dataset.tip = o.name + ' — ' + label + '. ' + o.tip;
+      var name = document.createElement('div'); name.className = 'bar-name'; name.textContent = o.name;
+      var sub = document.createElement('span'); sub.textContent = o.sub; name.appendChild(sub);
+      var track = document.createElement('div'); track.className = 'track';
+      if (hi === 0) {
+        var d = document.createElement('div'); d.className = 'dot'; track.appendChild(d);
+      } else {
+        var f = document.createElement('div'); f.className = 'fill' + (lo !== hi ? ' range' : '');
+        var frac = Math.max(hi / max, 0.008);
+        f.style.width = 'calc((100% - ' + LABEL_ROOM + 'px) * ' + frac.toFixed(4) + ')';
+        if (lo !== hi) f.style.setProperty('--lo', (lo / hi * 100).toFixed(1) + '%');
+        track.appendChild(f);
+      }
+      var v = document.createElement('span'); v.className = 'val'; v.textContent = label; track.appendChild(v);
+      row.appendChild(name); row.appendChild(track);
+      bars.appendChild(row);
+    });
+    bars.appendChild(tip);
+
+    ticks.innerHTML = '';
+    for (var t = 0; t <= max; t += step) {
+      var s = document.createElement('span'); s.textContent = '$' + t;
+      s.style.left = 'calc((100% - ' + LABEL_ROOM + 'px) * ' + (t / max).toFixed(4) + ')';
+      ticks.appendChild(s);
+    }
+
+    var rp = vals[2];
+    var rpText = '$' + rp[0].toFixed(2) + '–' + rp[1].toFixed(2);
+    document.querySelectorAll('[data-runpod-cell]').forEach(function (el) { el.textContent = rpText; });
+    document.querySelectorAll('[data-runpod-price]').forEach(function (el) { el.innerHTML = '$0–' + rp[1].toFixed(2) + ' <small>per job</small>'; });
+    document.querySelectorAll('[data-api-cell]').forEach(function (el) { el.textContent = money(vals[7][0]); });
+    var lo2 = Math.round(m * 2), hi4 = Math.round(m * 4);
+    document.querySelectorAll('[data-time="mid"]').forEach(function (el) {
+      el.textContent = 'About ' + lo2 + '–' + hi4 + ' min on a mid-range GPU for a ' + mmss(m) + ' video. Hours on old integrated graphics.';
+    });
+  }
+
+  function showTip(row, x, y) {
+    tip.textContent = row.dataset.tip; tip.hidden = false;
+    var box = bars.getBoundingClientRect();
+    var left = Math.min(Math.max(x - box.left + 12, 0), box.width - 290);
+    tip.style.left = Math.max(left, 0) + 'px';
+    tip.style.top = (y - box.top + 14) + 'px';
+  }
+  bars.addEventListener('pointermove', function (e) {
+    var row = e.target.closest('.bar-row'); if (!row) { tip.hidden = true; return; }
+    showTip(row, e.clientX, e.clientY);
+  });
+  bars.addEventListener('pointerleave', function () { tip.hidden = true; });
+  bars.addEventListener('focusin', function (e) {
+    var row = e.target.closest('.bar-row'); if (!row) return;
+    var r = row.getBoundingClientRect(); showTip(row, r.left + r.width * 0.4, r.bottom - 6);
+  });
+  bars.addEventListener('focusout', function () { tip.hidden = true; });
+
+  dur.addEventListener('input', render);
+  render();
+
+  document.querySelectorAll('.cmd button').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var code = btn.parentElement.querySelector('code');
+      var text = code.textContent;
+      function selectIt() {
+        var r = document.createRange(); r.selectNodeContents(code);
+        var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+        btn.textContent = 'Press Ctrl+C';
+      }
+      try {
+        navigator.clipboard.writeText(text).then(function () {
+          btn.textContent = 'Copied';
+          setTimeout(function () { btn.textContent = 'Copy'; }, 1600);
+        }, selectIt);
+      } catch (e) { selectIt(); }
+    });
+  });
+})();
+</script>

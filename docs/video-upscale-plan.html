@@ -215,7 +215,7 @@ footer { color: var(--ink-3); font-size: 0.88rem; }
       <h3>Video2X on your own computer</h3>
       <div class="price">$0 <small>free, open source</small></div>
       <dl class="facts">
-        <div><dt>Software</dt><dd>Video2X 6.4.0 with the Real-ESRGAN general models</dd></div>
+        <div><dt>Software</dt><dd>Video2X 6.4.0, plus the Real-ESRGAN general models from its master branch. The route 1 script adds them.</dd></div>
         <div><dt>Needs</dt><dd>A CPU with AVX2 and a GPU with Vulkan support: NVIDIA GTX 600 or newer, AMD Radeon HD 7000 or newer, Intel 6th-gen graphics or newer on Windows. No CUDA needed.</dd></div>
         <div><dt>Time</dt><dd data-time="mid">About 8–16 min on a mid-range GPU. Hours on old integrated graphics.</dd></div>
         <div><dt>Choose if</dt><dd>You have a gaming or workstation GPU from roughly 2016 on</dd></div>
@@ -382,7 +382,7 @@ footer { color: var(--ink-3); font-size: 0.88rem; }
     <table>
       <thead><tr><th>Tool</th><th>How you pay</th><th>For this job</th><th>Platforms</th><th>Fit for this video</th></tr></thead>
       <tbody>
-        <tr><td><strong>Video2X 6.4.0</strong></td><td>Free, open source (AGPL-3.0)</td><td class="num">$0</td><td>Windows, Linux; macOS through a container</td><td>Best free fit. Includes <code>realesr-general-x4v3</code> and its lighter-denoise twin. No release since Jan 2025.</td></tr>
+        <tr><td><strong>Video2X 6.4.0</strong></td><td>Free, open source (AGPL-3.0)</td><td class="num">$0</td><td>Windows, Linux; macOS through a container</td><td>Best free fit, but the 6.4.0 release lacks the live-action general models. They are on the master branch, and the route 1 script adds them. No release since Jan 2025.</td></tr>
         <tr><td><strong>Google Colab, free tier</strong></td><td>Free, with usage limits</td><td class="num">$0</td><td>Browser</td><td>Official Video2X notebook. Usually a T4 GPU, 12-hour sessions at most. The project warns that back-to-back sessions can get an account banned.</td></tr>
         <tr><td><strong>Colab Pro</strong></td><td>$9.99/month for 100 compute units</td><td class="num">$9.99</td><td>Browser</td><td>A T4 uses about 1.2–1.8 units an hour, so roughly 55–80 hours. Far more than this job needs.</td></tr>
         <tr><td><strong>RunPod RTX 4090</strong></td><td>$0.34/h Community, $0.69/h Secure, billed per second</td><td class="num" data-runpod-cell>$0.15–0.55</td><td>Browser, Docker</td><td>Run the Video2X container image. Stop the pod when done or it keeps billing.</td></tr>
@@ -398,7 +398,7 @@ footer { color: var(--ink-3); font-size: 0.88rem; }
 
 <section aria-labelledby="steps-h" class="col">
   <h2 id="steps-h">Steps</h2>
-  <p class="muted">The commands use the free tools: ffmpeg and Video2X. On Windows, run them in PowerShell from the folder that holds your file. On Colab, the notebook has its own cells for steps 4 and 5.</p>
+  <p class="muted">The commands use the free tools: ffmpeg and Video2X. On Windows, run them in PowerShell from the folder that holds your file. On Colab, the notebook has its own cells for steps 4 and 5. On Windows, <code>scripts/upscale-route1.ps1</code> on the <code>claude/video-upscale-1080p-wu0wte</code> branch runs every step for you, including the model setup.</p>
   <ol class="steps">
     <li>
       <div class="body">
@@ -423,19 +423,19 @@ footer { color: var(--ink-3); font-size: 0.88rem; }
     <li>
       <div class="body">
         <h3>Run both general models on the test clip</h3>
-        <p><code>realesr-general-x4v3</code> removes more grain. <code>realesr-general-wdn-x4v3</code> denoises less and keeps more texture. Compare them full-screen and pick the one where faces look like skin, not plastic. In the Video2X GUI, choose processor Real-ESRGAN, the model, and scale 4.</p>
-        <span class="cmd-label">Stronger denoise</span>
-        <div class="cmd"><pre><code>video2x -i test.mkv -o test-x4v3.mkv -p realesrgan -s 4 --realesrgan-model realesr-general-x4v3 -c libx264rgb -e crf=12 -e preset=slow</code></pre><button type="button">Copy</button></div>
-        <span class="cmd-label">Lighter denoise, more texture</span>
-        <div class="cmd"><pre><code>video2x -i test.mkv -o test-wdn.mkv -p realesrgan -s 4 --realesrgan-model realesr-general-wdn-x4v3 -c libx264rgb -e crf=12 -e preset=slow</code></pre><button type="button">Copy</button></div>
+        <p><code>realesr-general-x4v3</code> (strong) removes more grain. <code>realesr-general-wdn-x4v3</code> (light) denoises less and keeps more texture. Video2X 6.4.0 ships neither, and its CLI accepts only three model names. So the route 1 script downloads both from the master branch into the <code>realesrgan-plus</code> and <code>realesrgan-plus-anime</code> slots of its own copy. In that copy, the commands below run the general models. Compare the two full-screen and pick the one where faces look like skin, not plastic.</p>
+        <span class="cmd-label">Strong: realesr-general-x4v3 in the realesrgan-plus slot</span>
+        <div class="cmd"><pre><code>video2x -i test.mkv -o test-strong.mkv -p realesrgan -s 4 --realesrgan-model realesrgan-plus -c libx264rgb -e crf=12 -e preset=slow</code></pre><button type="button">Copy</button></div>
+        <span class="cmd-label">Light: realesr-general-wdn-x4v3 in the realesrgan-plus-anime slot</span>
+        <div class="cmd"><pre><code>video2x -i test.mkv -o test-light.mkv -p realesrgan -s 4 --realesrgan-model realesrgan-plus-anime -c libx264rgb -e crf=12 -e preset=slow</code></pre><button type="button">Copy</button></div>
         <p class="small muted">Set the encoder yourself as shown. Don't rely on Video2X's defaults. CRF 12 is a near-lossless intermediate, so quality is only spent once, in step 6.</p>
       </div>
     </li>
     <li>
       <div class="body">
         <h3>Upscale the whole video with the winner</h3>
-        <p>Same command, with the full file as input. The output is about 2560×1920. It gets scaled down to 1080 lines in the next step, which also tightens the detail.</p>
-        <div class="cmd"><pre><code>video2x -i source.mkv -o upscaled-4x.mkv -p realesrgan -s 4 --realesrgan-model realesr-general-wdn-x4v3 -c libx264rgb -e crf=12 -e preset=slow</code></pre><button type="button">Copy</button></div>
+        <p>Same command, with the full file as input. This example uses the light model. The output is about 2560×1920. It gets scaled down to 1080 lines in the next step, which also tightens the detail.</p>
+        <div class="cmd"><pre><code>video2x -i source.mkv -o upscaled-4x.mkv -p realesrgan -s 4 --realesrgan-model realesrgan-plus-anime -c libx264rgb -e crf=12 -e preset=slow</code></pre><button type="button">Copy</button></div>
       </div>
     </li>
     <li>
@@ -458,8 +458,8 @@ footer { color: var(--ink-3); font-size: 0.88rem; }
 <section aria-labelledby="fix-h" class="col">
   <h2 id="fix-h">If the test looks wrong</h2>
   <div class="fixes">
-    <div class="fix"><div class="sym">Faces look waxy or plastic</div><div>Switch to <code>realesr-general-wdn-x4v3</code>. For finer control, the Real-ESRGAN Python script sets denoise strength from 0 to 1 with <code>-dn</code>. One VHS restorer used 0.3, and the default is 0.5. In Topaz, lower Iris or turn it off, and keep Proteus denoise around 10–20.</div></div>
-    <div class="fix"><div class="sym">Grain is still visible</div><div>Use <code>realesr-general-x4v3</code>. If that isn't enough, add a light denoise before upscaling: <code>ffmpeg -i source.mkv -vf "hqdn3d=2:1.5:4:3" -c:v ffv1 -c:a copy clean.mkv</code>, then upscale <code>clean.mkv</code>. Topaz advises denoising before upscaling. Real-ESRGAN users report it makes little difference, because the model already denoises. Test both.</div></div>
+    <div class="fix"><div class="sym">Faces look waxy or plastic</div><div>Switch to the light model (<code>realesr-general-wdn-x4v3</code>). For finer control, the Real-ESRGAN Python script sets denoise strength from 0 to 1 with <code>-dn</code>. One VHS restorer used 0.3, and the default is 0.5. In Topaz, lower Iris or turn it off, and keep Proteus denoise around 10–20.</div></div>
+    <div class="fix"><div class="sym">Grain is still visible</div><div>Use the strong model (<code>realesr-general-x4v3</code>). If that isn't enough, add a light denoise before upscaling: <code>ffmpeg -i source.mkv -vf "hqdn3d=2:1.5:4:3" -c:v ffv1 -c:a copy clean.mkv</code>, then upscale <code>clean.mkv</code>. Topaz advises denoising before upscaling. Real-ESRGAN users report it makes little difference, because the model already denoises. Test both.</div></div>
     <div class="fix"><div class="sym">Comb-like lines on moving edges</div><div>The source is interlaced. Add <code>bwdif=0,</code> at the front of the filter in the pre-clean command (<code>-vf "bwdif=0,hqdn3d=2:1.5:4:3"</code>), or use <code>-vf bwdif=0</code> alone.</div></div>
     <div class="fix"><div class="sym">Bright halos around edges</div><div>Don't add sharpening. Denoising and upscaling already add apparent detail, and Topaz's own guidance warns against stacking a sharpen pass on top.</div></div>
     <div class="fix"><div class="sym">People look wide and squat</div><div>The 4:3 picture was stretched to 16:9. Keep <code>scale=-2:1080</code> as written: it sets the height and works out the width from the picture's shape.</div></div>
@@ -485,7 +485,7 @@ footer { color: var(--ink-3); font-size: 0.88rem; }
     <p class="muted">The research harness checked claims adversarially, but most vendor pages were blocked from this environment. Here is what holds up and how firmly.</p>
   </div>
   <div class="conf">
-    <div class="lvl-high"><h3>Confirmed against the primary source</h3><p class="small">Everything about Video2X: AGPL license, Real-ESRGAN/Real-CUGAN models through Vulkan, hardware requirements, the free Colab notebook and its ban warning, and 6.4.0 as the latest release (24 Jan 2025). Three of three reviewers confirmed each claim. The general-x4v3 models and the CLI syntax come from the project's own changelog and docs.</p></div>
+    <div class="lvl-high"><h3>Confirmed against the primary source</h3><p class="small">Everything about Video2X: AGPL license, Real-ESRGAN/Real-CUGAN models through Vulkan, hardware requirements, the free Colab notebook and its ban warning, and 6.4.0 as the latest release (24 Jan 2025). Three of three reviewers confirmed each claim. Tested in this session: 6.4.0 lacks the general models, and its CLI flags match the docs.</p></div>
     <div class="lvl-mid"><h3>Cross-checked prices; vendor pages blocked</h3><p class="small">Topaz, AVCLabs, HitPaw, CapCut, RunPod and Colab prices. Each matched in two separate searches of 2026 roundups, but nobody read the vendor's own page. Promotional prices change, so confirm at checkout.</p></div>
     <div class="lvl-low"><h3>From search summaries only</h3><p class="small">The video's identity (two pages that link this ID, plus a forum thread), processing speeds, and the Topaz slider advice. Speed figures come from different GPUs and pipelines.</p></div>
     <div class="lvl-low"><h3>My estimates</h3><p class="small">Processing times and RunPod job cost: about 2–4× the video's length on a mid-range GPU, plus 20–40 minutes of cloud setup. Also the choice of the general models for this footage, and the CRF values.</p></div>
